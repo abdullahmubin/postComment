@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+        table {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            table td, table th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            table tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            table tr:hover {
+                background-color: #ddd;
+            }
+
+            table th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #4CAF50;
+                color: white;
+            }
+
+            table td a {
+                cursor: pointer;
+            }
+    </style>
+</head>
+<body>
+
+    <div id="here_table"></div>
+
+    <script>
+        $(document).ready(function () {
+            function LoadPostWithComment() {
+                $.ajax({
+                    url: "http://localhost:1494/api/Post", success: function (result) {
+                        
+                        var $table = $('<table/>');
+                        for (var i = 0; i < result.length; i++) {
+
+                            var comm = result[i].CommentList.length > 1 ? 'Comments' : 'Comment';
+                            $table.append('<thead><tr><th>' + result[i].Post + ' </th><th> ' + result[i].Author + '</th><th>' + result[i].CreatedDateTime + '</th><th scope="col" colspan="2">' + result[i].CommentList.length + ' ' + comm + '</th></tr></thead>');
+
+                            var commentList = result[i].CommentList;
+                            console.log('comment list');
+                            console.log(commentList);
+                            for (var j = 0; j < commentList.length; j++) {
+
+                                $table.append('<tbody><tr><td>' + commentList[j].commentTbl.Comment + '</td><td> ' + commentList[j].commentTbl.CommentAuthor + '</td><td>' + commentList[j].commentTbl.CreatedDateTime + '</td><td><a id="like"> Like: ' + commentList[j].commentTbl.TotalLike + '</a></td><td><a id="dislike">Dislike: ' + commentList[j].commentTbl.TotalDislike + '</a></td></tr><tbody>');
+
+                            }
+
+
+                        }
+                        $('#here_table').append($table);
+
+                    }
+                });
+            };
+            LoadPostWithComment();
+
+
+            // TODO:
+            // Write some button click to perform like and dislike functionality. 
+            
+        });
+    </script>
+</body>
+</html>
